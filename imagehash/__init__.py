@@ -103,6 +103,22 @@ def hex_to_hash(hexstr):
 	hash_array = numpy.array([[bool(int(d)) for d in row] for row in bit_rows])
 	return ImageHash(hash_array)
 
+def hex_to_hash_to_vflip_hex(hexstr):
+	"""
+	Convert a stored hash (hex, as retrieved from str(Imagehash))
+	back to a Imagehash object.
+
+	Notes:
+	1. This algorithm assumes all hashes are bidimensional arrays
+	   with dimensions hash_size * hash_size.
+	2. This algorithm does not work for hash_size < 2.
+	"""
+	hash_size = int(numpy.sqrt(len(hexstr)*4))
+	binary_array = '{:0>{width}b}'.format(int(hexstr, 16), width = hash_size * hash_size)
+	bit_rows = [binary_array[i:i+hash_size] for i in range(0, len(binary_array), hash_size)]
+	hash_array = numpy.flip(numpy.array([[bool(int(d)) for d in row] for row in bit_rows]), 1)
+	return str(ImageHash(hash_array))
+
 def old_hex_to_hash(hexstr, hash_size=8):
 	"""
 	Convert a stored hash (hex, as retrieved from str(Imagehash))
