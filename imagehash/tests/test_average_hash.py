@@ -21,6 +21,9 @@ class Test(tests.TestImageHash):
     def test_average_hash_stored(self):
         self.check_hash_stored(self.func, self.image)
 
+    def test_get_all_permutations(self):
+        self.check_all_permutations(self.func, self.image)
+
     def test_average_hash_size(self):
         self.check_hash_size(self.func, self.image)
 

@@ -103,10 +103,66 @@ def hex_to_hash(hexstr):
 	hash_array = numpy.array([[bool(int(d)) for d in row] for row in bit_rows])
 	return ImageHash(hash_array)
 
+def get_all_permutations(hex_str):
+    # original
+
+    permutations = set([hex_str])
+    # all rotations:
+    permutations.add(hex_to_hash_to_rotate90_hex(hex_str, 1))
+    permutations.add(hex_to_hash_to_rotate90_hex(hex_str, 2))
+    permutations.add(hex_to_hash_to_rotate90_hex(hex_str, 3))
+
+    # vflipped
+    vflipped = hex_to_hash_to_vflip_hex(hex_str)
+    permutations.add(vflipped)
+
+    # hflipped
+    hflipped = hex_to_hash_to_hflip_hex(hex_str)
+    permutations.add(hflipped)
+
+    # flip both h and v
+    h_and_v_flipped = hex_to_hash_to_hflip_hex(vflipped)
+    permutations.add(h_and_v_flipped)
+
+    return permutations
+
+def hex_to_hash_to_rotate90_hex(hexstr, num_rotate):
+	"""
+	Convert a stored hash (hex, as retrieved from str(Imagehash))
+	back to a Imagehash object - rotated 90d degrees * num_rotate.
+
+	Notes:
+	1. This algorithm assumes all hashes are bidimensional arrays
+	   with dimensions hash_size * hash_size.
+	2. This algorithm does not work for hash_size < 2.
+	"""
+	hash_size = int(numpy.sqrt(len(hexstr)*4))
+	binary_array = '{:0>{width}b}'.format(int(hexstr, 16), width = hash_size * hash_size)
+	bit_rows = [binary_array[i:i+hash_size] for i in range(0, len(binary_array), hash_size)]
+	hash_array = numpy.rot90(numpy.array([[bool(int(d)) for d in row] for row in bit_rows]), num_rotate)
+	return str(ImageHash(hash_array))
+
+def hex_to_hash_to_hflip_hex(hexstr):
+	"""
+	Convert a stored hash (hex, as retrieved from str(Imagehash))
+	back to a Imagehash object - but flipped along the horisontal
+        axis.
+
+	Notes:
+	1. This algorithm assumes all hashes are bidimensional arrays
+	   with dimensions hash_size * hash_size.
+	2. This algorithm does not work for hash_size < 2.
+	"""
+	hash_size = int(numpy.sqrt(len(hexstr)*4))
+	binary_array = '{:0>{width}b}'.format(int(hexstr, 16), width = hash_size * hash_size)
+	bit_rows = [binary_array[i:i+hash_size] for i in range(0, len(binary_array), hash_size)]
+	hash_array = numpy.flip(numpy.array([[bool(int(d)) for d in row] for row in bit_rows]), 0)
+	return str(ImageHash(hash_array))
+
 def hex_to_hash_to_vflip_hex(hexstr):
 	"""
 	Convert a stored hash (hex, as retrieved from str(Imagehash))
-	back to a Imagehash object.
+	back to a Imagehash object - but flipped along the vertical axis.
 
 	Notes:
 	1. This algorithm assumes all hashes are bidimensional arrays

@@ -47,6 +47,17 @@ class TestImageHash(unittest.TestCase):
             emsg = 'hash_size={} is not respected'.format(hash_size)
             self.assertEqual(image_hash.hash.size, hash_size**2, emsg)
 
+    def check_all_permutations(self, func, image, sizes=range(2,8)):
+        for hash_size in sizes:
+            image_hash = func(image, hash_size)
+            perms = imagehash.get_all_permutations(str(image_hash))
+            #for perm in perms:
+            #    print(perm)
+
+            #emsg = 'stringified hash {} != original hash {}'.format(other_hash,
+            #                                                        image_hash)
+
+
     def check_hash_stored(self, func, image, sizes=range(2,21)):
         for hash_size in sizes:
             image_hash = func(image, hash_size)
