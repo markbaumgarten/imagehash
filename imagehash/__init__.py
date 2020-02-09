@@ -104,25 +104,23 @@ def hex_to_hash(hexstr):
 	return ImageHash(hash_array)
 
 def get_all_permutations(hex_str):
-    # original
-
+    # include original
     permutations = set([hex_str])
-    # all rotations:
-    permutations.add(hex_to_hash_to_rotate90_hex(hex_str, 1))
-    permutations.add(hex_to_hash_to_rotate90_hex(hex_str, 2))
-    permutations.add(hex_to_hash_to_rotate90_hex(hex_str, 3))
+    for i in range(0,4):
+        p = hex_to_hash_to_rotate90_hex(hex_str, i)
+        permutations.add(p)
 
-    # vflipped
-    vflipped = hex_to_hash_to_vflip_hex(hex_str)
-    permutations.add(vflipped)
+        # vflipped
+        vflipped = hex_to_hash_to_vflip_hex(p)
+        permutations.add(vflipped)
 
-    # hflipped
-    hflipped = hex_to_hash_to_hflip_hex(hex_str)
-    permutations.add(hflipped)
+        # hflipped
+        hflipped = hex_to_hash_to_hflip_hex(p)
+        permutations.add(hflipped)
 
-    # flip both h and v
-    h_and_v_flipped = hex_to_hash_to_hflip_hex(vflipped)
-    permutations.add(h_and_v_flipped)
+        # flip both h and v
+        h_and_v_flipped = hex_to_hash_to_hflip_hex(vflipped)
+        permutations.add(h_and_v_flipped)
 
     return permutations
 
