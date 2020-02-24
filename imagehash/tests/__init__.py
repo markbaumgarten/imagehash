@@ -56,6 +56,12 @@ class TestImageHash(unittest.TestCase):
 
             #emsg = 'stringified hash {} != original hash {}'.format(other_hash,
             #                                                        image_hash)
+    
+    def check_all_permutations_from_int(self, func, image, sizes=range(2,8)):
+        for hash_size in sizes:
+            image_hash = func(image, hash_size)
+            perms = imagehash.get_all_permutations_from_int(image_hash.to_int())
+            print(perms)
 
 
     def check_hash_stored(self, func, image, sizes=range(2,21)):

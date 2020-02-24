@@ -45,56 +45,32 @@ with open(os.path.join(os.path.abspath(
 
 def _binary_array_to_int(arr):
         """
-        internal function to make...
+        internal function to convert a binary array to an int
         """
-        sign = 1
         bit_string = ''.join(str(b) for b in 1 * arr.flatten())
-        if len(bit_string) > 64:
-            return None
-
         assert len(bit_string) <= 64
-        if len(bit_string) == 64 and bit_string[0] == '1':
-            sign = -1
-
-        if len(bit_string) == 64:
-            bit_string = bit_string[1:]
-
-        return int(bit_string, 2) * sign
+        return int(bit_string, 2)
 
 def _int_to_binary_array(number, size):
-        #if number == -2178829560316159936:
-        #    import pdb;pdb.set_trace()
         """
-        internal function to make...
+        internal function to convert an int to an 8*8 hash
         """
 
         bin_str = bin(number)
-        first_bit = '0'
-        if bin_str.startswith('-'):
-            first_bit = '1'
         bits = bin_str.split('b')[-1]
-        #bits = first_bit + bits
         arr = numpy.empty(shape=[size,], dtype=numpy.bool)
         l = len(bits)
         prepend = ''
         if l < size:
             prepend = '0' * (size-l)
-        bits = prepend + bits
-        if first_bit == '1':
-            bits = first_bit + bits[1:]
+            bits = prepend + bits
+
         for i,c in enumerate(bits):
             arr[i] = c=='1'
 
         return arr
 
 def _binary_array_to_hex(arr):
-        #iii = _binary_array_to_int(arr)
-
-        #if iii == None or iii < -9223372036854775808 or iii > 9223372036854775807 or arr.shape[0] != 64:
-        #    pass
-        #else:
-        #    new_arr = _int_to_binary_array(iii, arr.shape[0])
-        #    assert numpy.array_equal(new_arr, arr)
         """
         internal function to make a hex string out of a binary array.
         """
@@ -166,10 +142,29 @@ def int_to_hash(number):
         1. This algorithm assumes all hashes are bidimensional arrays
            with dimension 8X8
         """
-        binary_array = _int_to_binary_array(number, 8)
+        binary_array = _int_to_binary_array(number, 64)
         bit_rows = [binary_array[i:i+8] for i in range(0, len(binary_array), 8)]
         hash_array = numpy.array([[bool(int(d)) for d in row] for row in bit_rows])
         return ImageHash(hash_array)
+
+def get_all_permutations_from_int(number):
+    # include original
+    int_permutations = set([number])
+    # We reuse the hex_to_hash defs although we might
+    # not use our cpu in the most efficient way
+
+    # First get the actual hash
+    h = int_to_hash(number)
+    # Convert to hex
+    hex_hash = str(h)
+    # Get all hex permutations
+    permutations = get_all_permutations(hex_hash)
+    # Now get all hashes as ints
+    for p in permutations:
+        h = hex_to_hash(p)
+        int_permutations.add(h.to_int())
+
+    return int_permutations
 
 def get_all_permutations(hex_str):
     # include original
