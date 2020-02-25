@@ -116,6 +116,14 @@ class ImageHash(object):
         def to_int(self):
                 return _binary_array_to_int(self.hash.flatten())
 
+        def rotate(self, num_90_rotations):
+                self.hash = numpy.rot90(self.hash, num_90_rotations)
+
+        def vflip(self):
+                self.hash = numpy.flip(self.hash, 1)
+
+        def hflip(self):
+                self.hash = numpy.flip(self.hash, 0)
 
 def hex_to_hash(hexstr):
         """
@@ -150,18 +158,26 @@ def int_to_hash(number):
 def get_all_permutations_from_int(number):
     # include original
     int_permutations = set([number])
-    # We reuse the hex_to_hash defs although we might
-    # not use our cpu in the most efficient way
+    for r in [0,1,2,3]:
+        h = int_to_hash(number)
 
-    # First get the actual hash
-    h = int_to_hash(number)
-    # Convert to hex
-    hex_hash = str(h)
-    # Get all hex permutations
-    permutations = get_all_permutations(hex_hash)
-    # Now get all hashes as ints
-    for p in permutations:
-        h = hex_to_hash(p)
+        h.rotate(r)
+        int_permutations.add(h.to_int())
+
+        # vflipped
+        h.vflip()
+        int_permutations.add(h.to_int())
+
+        #v and h flip
+        h.hflip()
+        int_permutations.add(h.to_int())
+
+        #reset
+        h = int_to_hash(number)
+        h.rotate(r)
+
+        # hflipped
+        h.hflip()
         int_permutations.add(h.to_int())
 
     return int_permutations

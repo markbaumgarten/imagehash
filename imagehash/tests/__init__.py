@@ -82,3 +82,10 @@ class TestImageHash(unittest.TestCase):
             with self.assertRaises(ValueError):
                 func(image, hash_size)
 
+    def test_get_all_permutations_int_1(self):
+        p1 = imagehash.get_all_permutations_from_int(1)
+        assert p1 == {72057594037927936, 1, 9223372036854775808, 128}
+        p1 = imagehash.get_all_permutations_from_int(0)
+        assert p1 == {0}
+        p1 = imagehash.get_all_permutations_from_int(1234567)
+        assert p1 == {216735757837207297, 4746209, 74031217510449667, 9286633539481125056, 9788030631345651712, 13853072866121146496, 16243155645879025664, 1234567}
