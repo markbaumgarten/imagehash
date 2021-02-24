@@ -89,3 +89,7 @@ class TestImageHash(unittest.TestCase):
         assert p1 == {0}
         p1 = imagehash.get_all_permutations_from_int(1234567)
         assert p1 == {216735757837207297, 4746209, 74031217510449667, 9286633539481125056, 9788030631345651712, 13853072866121146496, 16243155645879025664, 1234567}
+
+    def test_get_all_permutations_hex_1(self):
+        p1 = imagehash.get_all_permutations("00c0e0e0c0c0f0f0")
+        assert p1 == {'0003070703030f0f', 'f0f0c0c0e0e0c000', '00000000c0ccfefe', '7f7f330300000000', '0000000003337f7f', '0f0f030307070300', 'fefeccc000000000', '00c0e0e0c0c0f0f0'}

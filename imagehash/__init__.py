@@ -156,52 +156,40 @@ def int_to_hash(number):
         return ImageHash(hash_array)
 
 def get_all_permutations_from_int(number):
-    # include original
-    int_permutations = set([number])
+    int_permutations = set([])
+
+    # Unflipped rotations
     for r in [0,1,2,3]:
         h = int_to_hash(number)
-
         h.rotate(r)
         int_permutations.add(h.to_int())
 
-        # vflipped
-        h.vflip()
-        int_permutations.add(h.to_int())
-
-        #v and h flip
-        h.hflip()
-        int_permutations.add(h.to_int())
-
-        #reset
+    # Flipped rotations
+    for r in [0,1,2,3]:
         h = int_to_hash(number)
         h.rotate(r)
-
-        # hflipped
-        h.hflip()
+        h.vflip()
         int_permutations.add(h.to_int())
 
     return int_permutations
 
 def get_all_permutations(hex_str):
-    # include original
-    permutations = set([hex_str])
-    for i in range(0,4):
-        p = hex_to_hash_to_rotate90_hex(hex_str, i)
-        permutations.add(p)
+    hex_permutations = set([])
 
-        # vflipped
-        vflipped = hex_to_hash_to_vflip_hex(p)
-        permutations.add(vflipped)
+    # Unflipped rotations
+    for r in [0,1,2,3]:
+        h = hex_to_hash(hex_str)
+        h.rotate(r)
+        hex_permutations.add(str(h))
 
-        # hflipped
-        hflipped = hex_to_hash_to_hflip_hex(p)
-        permutations.add(hflipped)
+    # Flipped rotations
+    for r in [0,1,2,3]:
+        h = hex_to_hash(hex_str)
+        h.vflip()
+        h.rotate(r)
+        hex_permutations.add(str(h))
 
-        # flip both h and v
-        h_and_v_flipped = hex_to_hash_to_hflip_hex(vflipped)
-        permutations.add(h_and_v_flipped)
-
-    return permutations
+    return hex_permutations
 
 def hex_to_hash_to_rotate90_hex(hexstr, num_rotate):
         """
